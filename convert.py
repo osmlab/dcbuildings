@@ -55,6 +55,8 @@ exit(0)
 # - cut up buildings and addresses by census tracts
 # - write out one .osm file per tract
 
+# Sketch for generating OSM. Loading from shapefiles for now.
+
 # create XML 
 results = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
 
