@@ -6,6 +6,54 @@ from fiona import collection
 from pprint import pprint
 from lxml import etree
 from lxml.etree import tostring
+from rtree import index
+from shapely.geometry import asShape
+from shapely import speedups
+
+speedups.enable()
+
+# Load all addresses
+addresses = []
+with collection("AddressPt/addresses.shp", "r") as input:
+    for address in input:
+        shape = asShape(address['geometry'])
+        shape.original = address
+        addresses.append(shape)
+
+# Load and index all buildings
+buildingIdx = index.Index()
+buildings = []
+with collection("BldgPly/buildings.shp", "r") as input:
+    i = 0
+    for building in input:
+        buildings.append(building)
+        shape = asShape(building['geometry'])
+        buildingIdx.add(len(buildings) - 1, shape.bounds)
+
+# Map addresses to buildings
+for address in addresses:
+    for i in buildingIdx.intersection(address.bounds):
+        if not buildings[i]['properties'].has_key('addresses'):
+            buildings[i]['properties']['addresses'] = []
+        buildings[i]['properties']['addresses'].append(address.original)
+
+# Where there is more than one address per building
+# we export them as single nodes
+addresses = []
+for building in buildings:
+    if 'addresses' in building['properties'] and len(building['properties']['addresses']) > 2:
+        addresses.extend(building['properties']['addresses'])
+
+pprint(len(buildings))
+pprint(len(addresses))
+
+exit(0)
+
+# TODO
+#
+# - discount already existing buildings and addresses
+# - cut up buildings and addresses by census tracts
+# - write out one .osm file per tract
 
 # create XML 
 results = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
