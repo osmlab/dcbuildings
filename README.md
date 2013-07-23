@@ -15,5 +15,5 @@ Work in progress.
 
 ## Related
 
-- [Ongoing import proposal (needs update if this script is to be adopted)](http://www.sixpica.com/osm/2013/05/19/proposal-for-importing-dc-gis-building-data-to-osm/)
+- [Ongoing import proposal (not updated with this script yet)](http://www.sixpica.com/osm/2013/05/19/proposal-for-importing-dc-gis-building-data-to-osm/)
 - [DC import page](http://wiki.openstreetmap.org/wiki/Washington_DC/DCGIS_imports)
