@@ -63,13 +63,13 @@ def appendBuilding(building, osmXml):
 # TODO:
 # - Collect and export addresses where more than one address per building
 with collection("TractPly/tracts.shp", "r") as input:
-	for tract in input:
-		# Generate XML document
-		osmXml = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
-		for i in buildingIdx.intersection(asShape(tract['geometry']).bounds):
-			appendBuilding(buildings[i], osmXml)
+    for tract in input:
+        # Generate XML document
+        osmXml = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
+        for i in buildingIdx.intersection(asShape(tract['geometry']).bounds):
+            appendBuilding(buildings[i], osmXml)
 
-		# Write XML document to disc.
-		handle = open(u'results/dc-%s.osm' % tract['properties']['TRACT'], 'w')
-		handle.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
-		handle.close()
+        # Write XML document to disc.
+        handle = open(u'results/dc-%s.osm' % tract['properties']['TRACT'], 'w')
+        handle.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
+        handle.close()
