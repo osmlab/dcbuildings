@@ -1,4 +1,4 @@
-all: BldgPly/buildings.shp AddressPt/addresses.shp TractPly/tracts.shp
+all: BldgPly/buildings.shp AddressPt/addresses.shp TractPly/tracts.shp resultsDirectory
 
 clean:
 	rm -f BldgPly.zip
@@ -34,3 +34,6 @@ AddressPt/addresses.shp: AddressPt
 TractPly/tracts.shp: TractPly
 	rm -f TractPly/tracts.*
 	ogr2ogr -t_srs EPSG:4326 TractPly/tracts.shp TractPly/TractPly.shp
+
+resultsDirectory:
+	mkdir -p results
