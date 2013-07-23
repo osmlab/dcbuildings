@@ -34,12 +34,7 @@ for address in addresses:
             buildings[i]['properties']['addresses'] = []
         buildings[i]['properties']['addresses'].append(address.original)
 
-# Where there is more than one address per building
-# we export them as single nodes
-addresses = []
-for building in buildings:
-    if 'addresses' in building['properties'] and len(building['properties']['addresses']) > 2:
-        addresses.extend(building['properties']['addresses'])
+del addresses
 
 # Generate a new osmId
 osmIds = dict(node = -1, way = -1, rel = -1)
