@@ -1,9 +1,6 @@
 # Convert DC building footprints and addresses into importable chunks of OSM files.
-# Not done folks.
 
-import subprocess
 from fiona import collection
-from pprint import pprint
 from lxml import etree
 from lxml.etree import tostring
 from rtree import index
