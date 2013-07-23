@@ -25,7 +25,6 @@ with collection("AddressPt/addresses.shp", "r") as input:
 buildingIdx = index.Index()
 buildings = []
 with collection("BldgPly/buildings.shp", "r") as input:
-    i = 0
     for building in input:
         buildings.append(building)
         shape = asShape(building['geometry'])
