@@ -51,6 +51,8 @@ def newOsmId(type):
     return osmIds[type]
 
 # Add a building to a given OSM xml document.
+# TODO:
+# - Add address to building tag where only one address
 def appendBuilding(building, osmXml):
     way = etree.Element('way', visible = 'true', id = str(newOsmId('way')))
     way.append(etree.Element('tag', k = 'building', v = 'yes'))
@@ -66,6 +68,8 @@ def appendBuilding(building, osmXml):
     osmXml.append(way)
 
 # Export .osm file by census tract.
+# TODO:
+# - Collect and export addresses where more than one address per building
 with collection("TractPly/tracts.shp", "r") as input:
 	for tract in input:
 		# Generate XML document
