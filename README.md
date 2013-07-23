@@ -5,7 +5,7 @@ Work in progress.
 
 ## Usage
 
-    # Download and reproject
-    ./download.sh
+    # Download and expand all files, reproject
+    make
     # Generate importable .osm files
     python convert.py
