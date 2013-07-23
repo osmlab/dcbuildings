@@ -6,7 +6,6 @@ from lxml.etree import tostring
 from rtree import index
 from shapely.geometry import asShape
 from shapely import speedups
-from shapely.prepared import prep
 
 speedups.enable()
 
