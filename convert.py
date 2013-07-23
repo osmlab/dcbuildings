@@ -44,66 +44,36 @@ for building in buildings:
     if 'addresses' in building['properties'] and len(building['properties']['addresses']) > 2:
         addresses.extend(building['properties']['addresses'])
 
-pprint(len(buildings))
-pprint(len(addresses))
+# Generate a new osmId
+osmIds = dict(node = -1, way = -1, rel = -1)
+def newOsmId(type):
+    osmIds[type] = osmIds[type] - 1
+    return osmIds[type]
 
-exit(0)
-
-# TODO
-#
-# - discount already existing buildings and addresses
-# - cut up buildings and addresses by census tracts
-# - write out one .osm file per tract
-
-# Sketch for generating OSM. Loading from shapefiles for now.
-
-# create XML 
-results = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
-
-ids = dict(
-    node = -1,
-    way = -1,
-    rel = -1
-)
-def newId(type):
-    ids[type] = ids[type] - 1
-    return ids[type]
-
-with collection("AddressPt/addresses.shp", "r") as input:
-    for address in input:
-        # pprint(address)
+# Add a building to a given OSM xml document.
+def appendBuilding(building, osmXml):
+    way = etree.Element('way', visible = 'true', id = str(newOsmId('way')))
+    way.append(etree.Element('tag', k = 'building', v = 'yes'))
+    for pos in building['geometry']['coordinates'][0]:
+        id = str(newOsmId('node'))
         node = etree.Element('node',
-            lon=str(address['geometry']['coordinates'][0]),
-            lat=str(address['geometry']['coordinates'][1]),
+            lon=str(pos[0]),
+            lat=str(pos[1]),
             visible='true',
-            id=str(newId('node')))
-        node.append(etree.Element('tag',
-            k='addr:housenumber',
-            v=str(address['properties']['ADDRNUM'])));
-        results.append(node)
-        break
+            id=id)
+        osmXml.append(node)
+        way.append(etree.Element('nd', ref=id))
+    osmXml.append(way)
 
-with collection("BldgPly/buildings.shp", "r") as input:
-    for building in input:
-        # pprint(building)
-        way = etree.Element('way',
-            visible='true',
-            id=str(newId('way')))
-        way.append(etree.Element('tag', k='building', v='yes'));
-        for pos in building['geometry']['coordinates'][0]:
-            id = str(newId('node'))
-            node = etree.Element('node',
-                lon=str(pos[0]),
-                lat=str(pos[1]),
-                visible='true',
-                id=id)
-            results.append(node)
-            way.append(etree.Element('nd', ref=id))
-        results.append(way)
-        break
+# Export .osm file by census tract.
+with collection("TractPly/tracts.shp", "r") as input:
+	for tract in input:
+		# Generate XML document
+		osmXml = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
+		for i in buildingIdx.intersection(asShape(tract['geometry']).bounds):
+			appendBuilding(buildings[i], osmXml)
 
-handle = open('buildings.osm', 'w')
-handle.writelines(tostring(results, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
-handle.close()
-
-exit(0)
+		# Write XML document to disc.
+		handle = open(u'results/dc-%s.osm' % tract['properties']['TRACT'], 'w')
+		handle.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
+		handle.close()
