@@ -45,9 +45,18 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
         osmIds[type] = osmIds[type] - 1
         return osmIds[type]
 
-    # Add a building to a given OSM xml document.
-    # TODO:
-    # - Add address to building tag where only one address
+    # Appends an address to a given node or way.
+    def appendAddress(address, element):
+        if 'ADDRNUM' in address:
+            element.append(etree.Element('tag', k = 'addr:housenumber', v = str(address['ADDRNUM'])))
+        if all (k in address for k in ('STNAME', 'STREET_TYP', 'QUADRANT')):
+            street = "%s %s %s" % \
+                (address['STNAME'].title(), # TODO: turns 42nd into 42Nd
+                address['STREET_TYP'].title(),
+                address['QUADRANT'])
+            element.append(etree.Element('tag', k = 'addr:street', v = street))
+
+    # Appends a building to a given OSM xml document.
     def appendBuilding(building, address, osmXml):
         # Create building node
         way = etree.Element('way', visible = 'true', id = str(newOsmId('way')))
@@ -55,28 +64,19 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
 
         # Attach address to building
         if address:
-            properties = address['properties']
-            if 'ADDRNUM' in properties:
-                way.append(etree.Element('tag', k = 'addr:housenumber', v = str(properties['ADDRNUM'])))
-            if all (k in properties for k in ('STNAME', 'STREET_TYP', 'QUADRANT')):
-                street = "%s %s %s" % \
-                    (properties['STNAME'].title(), # TODO: turns 42nd into 42Nd
-                    properties['STREET_TYP'].title(),
-                    properties['QUADRANT'])
-                way.append(etree.Element('tag', k = 'addr:street', v = street))
+            appendAddress(address['properties'], way)
 
         # Export building nodes
         for pos in building['geometry']['coordinates'][0]:
             id = str(newOsmId('node'))
-            node = etree.Element('node',
-                lon=str(pos[0]),
-                lat=str(pos[1]),
-                visible='true',
-                id=id)
+            node = etree.Element('node', visible='true', id= id )
+            node.attrib['lon'] = str(pos[0])
+            node.attrib['lat'] = str(pos[1])
             osmXml.append(node)
             way.append(etree.Element('nd', ref=id))
         osmXml.append(way)
 
+    # Export buildings.
     addresses = []
     osmXml = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
     for building in buildings:
@@ -89,11 +89,22 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
                 addresses.extend(building['properties']['addresses'])
         appendBuilding(building, address, osmXml)
 
-    # Write XML document to disc.
-    handle = open(buildingOut, 'w')
-    handle.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
-    handle.close()
-    print "Exported " + buildingOut
+    with open(buildingOut, 'w') as outFile:
+        outFile.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
+        print "Exported " + buildingOut
+
+    # Export separate addresses.
+    if (len(addresses) > 0):
+        osmXml = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
+        for address in addresses:
+            node = etree.Element('node', visible = 'true', id = str(newOsmId('node')))
+            node.attrib['lon'] = str(address['geometry']['coordinates'][0])
+            node.attrib['lat'] = str(address['geometry']['coordinates'][1])
+            appendAddress(address['properties'], node)
+            osmXml.append(node)
+        with open(addressOut, 'w') as outFile:
+            outFile.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
+            print "Exported " + addressOut
 
 if (len(argv) == 2):
     convert(
