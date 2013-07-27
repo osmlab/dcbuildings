@@ -8,6 +8,7 @@ from shapely import speedups
 from sys import argv
 from glob import glob
 import re
+from pprint import pprint
 
 speedups.enable()
 
@@ -47,9 +48,24 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     # Add a building to a given OSM xml document.
     # TODO:
     # - Add address to building tag where only one address
-    def appendBuilding(building, osmXml):
+    def appendBuilding(building, address, osmXml):
+        # Create building node
         way = etree.Element('way', visible = 'true', id = str(newOsmId('way')))
         way.append(etree.Element('tag', k = 'building', v = 'yes'))
+
+        # Attach address to building
+        if address:
+            properties = address['properties']
+            if 'ADDRNUM' in properties:
+                way.append(etree.Element('tag', k = 'addr:housenumber', v = str(properties['ADDRNUM'])))
+            if all (k in properties for k in ('STNAME', 'STREET_TYP', 'QUADRANT')):
+                street = "%s %s %s" % \
+                    (properties['STNAME'].title(), # TODO: turns 42nd into 42Nd
+                    properties['STREET_TYP'].title(),
+                    properties['QUADRANT'])
+                way.append(etree.Element('tag', k = 'addr:street', v = street))
+
+        # Export building nodes
         for pos in building['geometry']['coordinates'][0]:
             id = str(newOsmId('node'))
             node = etree.Element('node',
@@ -61,9 +77,17 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             way.append(etree.Element('nd', ref=id))
         osmXml.append(way)
 
+    addresses = []
     osmXml = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
     for building in buildings:
-        appendBuilding(building, osmXml)
+        address = None
+        # Only export address with building if exactly one address per building.
+        if 'addresses' in building['properties']:
+            if (len(building['properties']['addresses']) == 1):
+                address = building['properties']['addresses'][0]
+            else:
+                addresses.extend(building['properties']['addresses'])
+        appendBuilding(building, address, osmXml)
 
     # Write XML document to disc.
     handle = open(buildingOut, 'w')
