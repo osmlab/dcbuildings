@@ -54,7 +54,7 @@ python chunk.py manysmallfeatures.shp sections.shp export/features-by-section-%s
 
 if len(argv) == 4:
     chunk(argv[1], argv[2], argv[3])
-elif len(argv == 5):
+elif len(argv) == 5:
     chunk(argv[1], argv[2], argv[3], argv[4])
 else:
     print usage
