@@ -23,16 +23,17 @@ def chunk(featureFileName, sectionFileName, pattern, key = None):
         with collection(sectionFileName, "r") as sectionFile:
             i = 0
             for section in sectionFile:
-                if (key):
-                    i = section['properties'][key]
-                with collection(pattern % i, 'w', 'Esri Shapefile', 
+                fileName = pattern % i
+                if key:
+                    fileName = pattern % section['properties'][key]
+                with collection(fileName, 'w', 'Esri Shapefile',
                         schema = featureFile.schema,
                         crs = featureFile.crs) as output:
                     sectionShape = asShape(section['geometry'])
                     for j in featureIdx.intersection(sectionShape.bounds):
                         if asShape(features[j]['geometry']).intersects(sectionShape):
                             output.write(features[j])
-                    print "Exported %s" % (pattern % i)
+                    print "Exported %s" % fileName
                     i = i + 1
 
 usage = """
