@@ -24,11 +24,16 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     # Load and index all buildings
     buildingIdx = index.Index()
     buildings = []
+    voids = []
     with collection(buildingIn, "r") as input:
         for building in input:
             building['shape'] = asShape(building['geometry']).simplify(0.000005, True)
-            buildings.append(building)
-            buildingIdx.add(len(buildings) - 1, building['shape'].bounds)
+            if building['properties']['DESCRIPTIO'] == 'Void':
+                voids.append(building)
+            else:
+                building['voids'] = []
+                buildings.append(building)
+                buildingIdx.add(len(buildings) - 1, building['shape'].bounds)
 
     # Map addresses to buildings
     for address in addresses:
@@ -37,6 +42,12 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
                 if not buildings[i]['properties'].has_key('addresses'):
                     buildings[i]['properties']['addresses'] = []
                 buildings[i]['properties']['addresses'].append(address.original)
+
+    # Map voids to buildings
+    for void in voids:
+        for i in buildingIdx.intersection(void['shape'].bounds):
+            if buildings[i]['shape'].intersects(void['shape']):
+                buildings[i]['voids'].append(void)
 
     del addresses
 
@@ -59,23 +70,37 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
 
     # Appends a building to a given OSM xml document.
     def appendBuilding(building, address, osmXml):
-        # Create building node
-        way = etree.Element('way', visible = 'true', id = str(newOsmId('way')))
-        way.append(etree.Element('tag', k = 'building', v = 'yes'))
+        def appendNewWay(coords, osmXml):
+            way = etree.Element('way', visible = 'true', id=str(newOsmId('way')))
+            for coord in coords:
+                id = str(newOsmId('node'))
+                node = etree.Element('node', visible='true', id=id)
+                node.attrib['lon'] = str(coord[0])
+                node.attrib['lat'] = str(coord[1])
+                osmXml.append(node)
+                way.append(etree.Element('nd', ref=id))
+            osmXml.append(way)
+            return way
+
+        # Export building, create multipolygon if there are void shapes.
+        way = appendNewWay(building['shape'].exterior.coords, osmXml)
+        voidWays = []
+        for void in building['voids']:
+            voidWays.append(appendNewWay(void['shape'].exterior.coords, osmXml))
+        if len(voidWays) > 0:
+            relation = etree.Element('relation', visible='true', id=str(newOsmId('way')))
+            relation.append(etree.Element('member', type='way', role='outer', ref=way.get('id')))
+            for voidWay in voidWays:
+                relation.append(etree.Element('member', type='way', role='inner', ref=voidWay.get('id')))
+            relation.append(etree.Element('tag', k='building', v='yes'))
+            relation.append(etree.Element('tag', k='type', v='multipolygon'))
+            osmXml.append(relation)
+        else:
+            way.append(etree.Element('tag', k='building', v='yes'))
 
         # Attach address to building
         if address:
             appendAddress(address['properties'], way)
-
-        # Export building nodes
-        for pos in building['shape'].exterior.coords:
-            id = str(newOsmId('node'))
-            node = etree.Element('node', visible='true', id= id )
-            node.attrib['lon'] = str(pos[0])
-            node.attrib['lat'] = str(pos[1])
-            osmXml.append(node)
-            way.append(etree.Element('nd', ref=id))
-        osmXml.append(way)
 
     # Export buildings.
     addresses = []
