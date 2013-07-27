@@ -26,14 +26,14 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     buildings = []
     with collection(buildingIn, "r") as input:
         for building in input:
+            building['shape'] = asShape(building['geometry']).simplify(0.000005, True)
             buildings.append(building)
-            shape = asShape(building['geometry'])
-            buildingIdx.add(len(buildings) - 1, shape.bounds)
+            buildingIdx.add(len(buildings) - 1, building['shape'].bounds)
 
     # Map addresses to buildings
     for address in addresses:
         for i in buildingIdx.intersection(address.bounds):
-            if asShape(buildings[i]['geometry']).contains(address):
+            if building['shape'].contains(address):
                 if not buildings[i]['properties'].has_key('addresses'):
                     buildings[i]['properties']['addresses'] = []
                 buildings[i]['properties']['addresses'].append(address.original)
@@ -68,7 +68,7 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             appendAddress(address['properties'], way)
 
         # Export building nodes
-        for pos in building['geometry']['coordinates'][0]:
+        for pos in building['shape'].exterior.coords:
             id = str(newOsmId('node'))
             node = etree.Element('node', visible='true', id= id )
             node.attrib['lon'] = str(pos[0])
