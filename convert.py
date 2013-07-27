@@ -71,13 +71,17 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     def appendBuilding(building, address, osmXml):
         def appendNewWay(coords, osmXml):
             way = etree.Element('way', visible = 'true', id=str(newOsmId('way')))
-            for coord in coords:
-                id = str(newOsmId('node'))
-                node = etree.Element('node', visible='true', id=id)
+            firstNid = 0
+            for i, coord in enumerate(coords):
+                if i == 0: continue
+                nid = str(newOsmId('node'))
+                if i == 1: firstNid = nid
+                node = etree.Element('node', visible='true', id=nid)
                 node.attrib['lon'] = str(coord[0])
                 node.attrib['lat'] = str(coord[1])
                 osmXml.append(node)
-                way.append(etree.Element('nd', ref=id))
+                way.append(etree.Element('nd', ref=nid))
+            way.append(etree.Element('nd', ref=firstNid)) # close way
             osmXml.append(way)
             return way
 
