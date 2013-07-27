@@ -1,16 +1,32 @@
 DC building footprint import
 ============================
 
-[Work in progress.](https://github.com/osmlab/dcbuildings/issues)
+**[Work in progress, do not use for import yet](https://github.com/osmlab/dcbuildings/issues)**
 
 Generates an OSM file of buildings with addresses per DC census tract, ready
 to be used in JOSM for a manual review and upload to OpenStreetMap.
 
+## Source data
+
+- Address Points http://data.dc.gov/Metadata.aspx?id=190
+- Buildings http://data.dc.gov/Metadata.aspx?id=59
+
+## Features
+
+- Conflates buildings and addresses
+- Cleans address names
+- Exports one OSM XML building file per DC census tract
+- Exports OSM XML address files for addresses that pertain to buildings with
+  more than one address
+- Handles multipolygons
+- Simplifies building shapes
+
 ## Usage
 
-The do-it-all-at-once way (will take upwards of 5 minutes):
+Run all stages:
 
-    # Download all files and process them into OSM
+    # Download all files and process them into a building
+    # and an address .osm file per census tract.
     make
 
 You can run stages separately, like so:
@@ -30,8 +46,8 @@ You can run stages separately, like so:
     make clean
 
     # Sometimes useful: convert only specific census tracts.
-    # Convert only census tract number 2.
-    python convert.py 2
+    # Convert only census tract 000100.
+    python convert.py 000100
 
 ## Related
 
