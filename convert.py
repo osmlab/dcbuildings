@@ -45,7 +45,7 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     # Map voids to buildings
     for void in voids:
         for i in buildingIdx.intersection(void['shape'].bounds):
-            if buildings[i]['shape'].contains(void['shape']):
+            if buildings[i]['shape'].intersects(void['shape']):
                 buildings[i]['voids'].append(void)
 
     del addresses
