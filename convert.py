@@ -114,7 +114,7 @@ if (len(argv) == 2):
         'osm/buildings-%s.osm' % argv[1],
         'osm/addresses-%s.osm' % argv[1])
 else:
-    buildingFiles = glob("shapefiles/buildings-*.shp")
+    buildingFiles = glob("chunks/buildings-*.shp")
     for buildingFile in buildingFiles:
         matches = re.match('^.*-(\d+)\.shp$', buildingFile).groups(0)
         convert(
