@@ -1,4 +1,4 @@
-all: BldgPly/buildings.shp AddressPt/addresses.shp TractPly/tracts.shp resultsDirectory
+all: BldgPly/buildings.shp AddressPt/addresses.shp TractPly/tracts.shp directories chunks osm
 
 clean:
 	rm -f BldgPly.zip
@@ -35,5 +35,13 @@ TractPly/tracts.shp: TractPly
 	rm -f TractPly/tracts.*
 	ogr2ogr -t_srs EPSG:4326 TractPly/tracts.shp TractPly/TractPly.shp
 
-resultsDirectory:
-	mkdir -p results
+chunks: directories
+	python chunk.py AddressPt/addresses.shp TractPly/tracts.shp chunks/addresses-%s.shp TRACT
+	python chunk.py BldgPly/buildings.shp TractPly/tracts.shp chunks/buildings-%s.shp TRACT
+
+osm: directories
+	python convert.py
+
+directories:
+	mkdir -p chunks
+	mkdir -p osm
