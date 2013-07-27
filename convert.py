@@ -8,7 +8,6 @@ from shapely import speedups
 from sys import argv
 from glob import glob
 import re
-from pprint import pprint
 
 speedups.enable()
 
@@ -47,7 +46,6 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     for void in voids:
         for i in buildingIdx.intersection(void['shape'].bounds):
             if buildings[i]['shape'].contains(void['shape']):
-                pprint('multipolygon here')
                 buildings[i]['voids'].append(void)
 
     del addresses
