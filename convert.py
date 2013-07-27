@@ -73,7 +73,7 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             way = etree.Element('way', visible = 'true', id=str(newOsmId('way')))
             firstNid = 0
             for i, coord in enumerate(coords):
-                if i == 0: continue
+                if i == 0: continue # the first and last coordinate are the same
                 nid = str(newOsmId('node'))
                 if i == 1: firstNid = nid
                 node = etree.Element('node', visible='true', id=nid)
