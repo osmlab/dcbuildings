@@ -8,13 +8,30 @@ to be used in JOSM for a manual review and upload to OpenStreetMap.
 
 ## Usage
 
-    # Download and expand all files, reproject
+The do-it-all-at-once way (will take upwards of 5 minutes):
+
+    # Download all files and process them into OSM
     make
 
-    # Generate importable .osm files
-    # This will populate the results/ directory with one .osm file per
+You can run stages separately, like so:
+
+    # Download and expand all files, reproject
+    make download
+
+    # Chunk address and building files by census tracts
+    make chunks
+
+    # Generate importable .osm files.
+    # This will populate the osm/ directory with one .osm file per
     # DC census tract.
-    python convert.py
+    make osm
+
+    # Clean up all intermediary files:
+    make clean
+
+    # Sometimes useful: convert only specific census tracts.
+    # Convert only census tract number 2.
+    python convert.py 2
 
 ## Related
 
