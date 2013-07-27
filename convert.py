@@ -33,9 +33,10 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     # Map addresses to buildings
     for address in addresses:
         for i in buildingIdx.intersection(address.bounds):
-            if not buildings[i]['properties'].has_key('addresses'):
-                buildings[i]['properties']['addresses'] = []
-            buildings[i]['properties']['addresses'].append(address.original)
+            if asShape(buildings[i]['geometry']).contains(address):
+                if not buildings[i]['properties'].has_key('addresses'):
+                    buildings[i]['properties']['addresses'] = []
+                buildings[i]['properties']['addresses'].append(address.original)
 
     del addresses
 
