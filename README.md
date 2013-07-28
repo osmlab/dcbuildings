@@ -45,8 +45,8 @@ You can run stages separately, like so:
     # Clean up all intermediary files:
     make clean
 
-    # Sometimes useful: convert only specific census tracts.
-    # Convert only census tract 000100.
+    # For testing it's useful to convert just a single census tract.
+    # For instance, convert census tract 000100:
     python convert.py 000100
 
 ## Related
