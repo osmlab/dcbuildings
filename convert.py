@@ -26,11 +26,12 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     voids = []
     with collection(buildingIn, "r") as input:
         for building in input:
-            building['shape'] = asShape(building['geometry']).simplify(0.000005, True)
+            building['shape'] = asShape(building['geometry'])
             if building['properties']['DESCRIPTIO'] == 'Void':
                 voids.append(building)
             else:
                 building['voids'] = []
+                building['properties']['addresses'] = []
                 buildings.append(building)
                 buildingIdx.add(len(buildings) - 1, building['shape'].bounds)
 
@@ -38,8 +39,6 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     for address in addresses:
         for i in buildingIdx.intersection(address.bounds):
             if building['shape'].contains(address):
-                if not buildings[i]['properties'].has_key('addresses'):
-                    buildings[i]['properties']['addresses'] = []
                 buildings[i]['properties']['addresses'].append(address.original)
 
     # Map voids to buildings
@@ -47,8 +46,6 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
         for i in buildingIdx.intersection(void['shape'].bounds):
             if buildings[i]['shape'].intersects(void['shape']):
                 buildings[i]['voids'].append(void)
-
-    del addresses
 
     # Generate a new osmId
     osmIds = dict(node = -1, way = -1, rel = -1)
@@ -86,10 +83,10 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             return way
 
         # Export building, create multipolygon if there are void shapes.
-        way = appendNewWay(building['shape'].exterior.coords, osmXml)
+        way = appendNewWay(building['geometry']['coordinates'][0], osmXml)
         voidWays = []
         for void in building['voids']:
-            voidWays.append(appendNewWay(void['shape'].exterior.coords, osmXml))
+            voidWays.append(appendNewWay(void['geometry']['coordinates'][0], osmXml))
         if len(voidWays) > 0:
             relation = etree.Element('relation', visible='true', id=str(newOsmId('way')))
             relation.append(etree.Element('member', type='way', role='outer', ref=way.get('id')))
@@ -111,11 +108,10 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     for building in buildings:
         address = None
         # Only export address with building if exactly one address per building.
-        if 'addresses' in building['properties']:
-            if (len(building['properties']['addresses']) == 1):
-                address = building['properties']['addresses'][0]
-            else:
-                addresses.extend(building['properties']['addresses'])
+        if len(building['properties']['addresses']) == 1:
+            address = building['properties']['addresses'][0]
+        else:
+            addresses.extend(building['properties']['addresses'])
         appendBuilding(building, address, osmXml)
 
     with open(buildingOut, 'w') as outFile:
