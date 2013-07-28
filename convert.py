@@ -38,7 +38,7 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     # Map addresses to buildings
     for address in addresses:
         for i in buildingIdx.intersection(address.bounds):
-            if building['shape'].contains(address):
+            if buildings[i]['shape'].contains(address):
                 buildings[i]['properties']['addresses'].append(address.original)
 
     # Map voids to buildings
