@@ -11,8 +11,10 @@ import re
 
 speedups.enable()
 
+# Converts given building and address shapefiles into corresponding OSM XML
+# files.
 def convert(buildingIn, addressIn, buildingOut, addressOut):
-    # Load all addresses
+    # Load all addresses.
     addresses = []
     with collection(addressIn, "r") as input:
         for address in input:
@@ -20,7 +22,7 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             shape.original = address
             addresses.append(shape)
 
-    # Load and index all buildings
+    # Load and index all buildings.
     buildingIdx = index.Index()
     buildings = []
     voids = []
@@ -35,19 +37,19 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
                 buildings.append(building)
                 buildingIdx.add(len(buildings) - 1, building['shape'].bounds)
 
-    # Map addresses to buildings
+    # Map addresses to buildings.
     for address in addresses:
         for i in buildingIdx.intersection(address.bounds):
             if buildings[i]['shape'].contains(address):
                 buildings[i]['properties']['addresses'].append(address.original)
 
-    # Map voids to buildings
+    # Map voids to buildings.
     for void in voids:
         for i in buildingIdx.intersection(void['shape'].bounds):
             if buildings[i]['shape'].intersects(void['shape']):
                 buildings[i]['voids'].append(void)
 
-    # Generate a new osmId
+    # Generates a new osm id.
     osmIds = dict(node = -1, way = -1, rel = -1)
     def newOsmId(type):
         osmIds[type] = osmIds[type] - 1
@@ -107,18 +109,17 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
         way.append(etree.Element('tag', k='building', v='yes'))
         if address: appendAddress(address['properties'], way)
 
-    # Export buildings.
+    # Export buildings. Only export address with building if thre is exactly
+    # one address per building.
     addresses = []
     osmXml = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
     for building in buildings:
         address = None
-        # Only export address with building if exactly one address per building.
         if len(building['properties']['addresses']) == 1:
             address = building['properties']['addresses'][0]
         else:
             addresses.extend(building['properties']['addresses'])
         appendBuilding(building, address, osmXml)
-
     with open(buildingOut, 'w') as outFile:
         outFile.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
         print "Exported " + buildingOut
@@ -136,6 +137,8 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             outFile.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
             print "Exported " + addressOut
 
+# Run conversions. Expects an chunks/addresses-[tract id].shp for each
+# chunks/buildings-[tract id].shp. Optinally convert only one census tract.
 if (len(argv) == 2):
     convert(
         'chunks/buildings-%s.shp' % argv[1],
