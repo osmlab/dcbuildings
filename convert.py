@@ -63,8 +63,12 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             if address['ADDRNUMSUF']:
                 num = "%s %s" % (num, address['ADDRNUMSUF'])
             element.append(etree.Element('tag', k='addr:housenumber', v=num))
+            if re.match('^(\d+)\w\w$', address['STNAME']): # Test for 2ND, 14TH, 21ST
+                streetname = address['STNAME'].lower()
+            else:
+                streetname = address['STNAME'].title()
             street = "%s %s %s" % \
-                (address['STNAME'].title(), # TODO: turns 42nd into 42Nd
+                (streetname,
                 address['STREET_TYP'].title(),
                 address['QUADRANT'])
             element.append(etree.Element('tag', k = 'addr:street', v = street))
