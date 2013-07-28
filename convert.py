@@ -92,15 +92,11 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             relation.append(etree.Element('member', type='way', role='outer', ref=way.get('id')))
             for voidWay in voidWays:
                 relation.append(etree.Element('member', type='way', role='inner', ref=voidWay.get('id')))
-            relation.append(etree.Element('tag', k='building', v='yes'))
             relation.append(etree.Element('tag', k='type', v='multipolygon'))
             osmXml.append(relation)
-        else:
-            way.append(etree.Element('tag', k='building', v='yes'))
-
-        # Attach address to building
-        if address:
-            appendAddress(address['properties'], way)
+            way = relation
+        way.append(etree.Element('tag', k='building', v='yes'))
+        if address: appendAddress(address['properties'], way)
 
     # Export buildings.
     addresses = []
