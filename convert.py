@@ -55,9 +55,14 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
 
     # Appends an address to a given node or way.
     def appendAddress(address, element):
-        if 'ADDRNUM' in address:
-            element.append(etree.Element('tag', k = 'addr:housenumber', v = str(address['ADDRNUM'])))
-        if all (k in address for k in ('STNAME', 'STREET_TYP', 'QUADRANT')):
+        if address['ADDRNUM'] and \
+            address['STNAME'] and \
+            address['STREET_TYP'] and \
+            address['QUADRANT']:
+            num = str(address['ADDRNUM'])
+            if address['ADDRNUMSUF']:
+                num = "%s %s" % (num, address['ADDRNUMSUF'])
+            element.append(etree.Element('tag', k='addr:housenumber', v=num))
             street = "%s %s %s" % \
                 (address['STNAME'].title(), # TODO: turns 42nd into 42Nd
                 address['STREET_TYP'].title(),
