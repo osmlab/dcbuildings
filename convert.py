@@ -67,7 +67,7 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     # Appends a building to a given OSM xml document.
     def appendBuilding(building, address, osmXml):
         def appendNewWay(coords, osmXml):
-            way = etree.Element('way', visible = 'true', id=str(newOsmId('way')))
+            way = etree.Element('way', visible='true', id=str(newOsmId('way')))
             firstNid = 0
             for i, coord in enumerate(coords):
                 if i == 0: continue # the first and last coordinate are the same
