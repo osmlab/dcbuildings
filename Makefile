@@ -25,11 +25,11 @@ TractPly: TractPly.zip
 
 BldgPly/buildings.shp: BldgPly
 	rm -f BldgPly/buildings.*
-	ogr2ogr -t_srs EPSG:4326 BldgPly/buildings.shp BldgPly/BldgPly.shp
+	ogr2ogr -simplify 0.2 -t_srs EPSG:4326 -overwrite BldgPly/buildings.shp BldgPly/BldgPly.shp
 
 AddressPt/addresses.shp: AddressPt
 	rm -f AddressPt/addresses.*
-	ogr2ogr -t_srs EPSG:4326 AddressPt/addresses.shp AddressPt/AddressPt.shp
+	ogr2ogr -t_srs EPSG:4326 -overwrite AddressPt/addresses.shp AddressPt/AddressPt.shp
 
 TractPly/tracts.shp: TractPly
 	rm -f TractPly/tracts.*
