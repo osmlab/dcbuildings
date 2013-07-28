@@ -1,5 +1,5 @@
-DC building footprint import
-============================
+DC building and address import
+==============================
 
 **[Work in progress, do not use for import yet](https://github.com/osmlab/dcbuildings/issues)**
 
