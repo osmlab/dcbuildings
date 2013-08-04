@@ -58,8 +58,10 @@ more than one address relates to a building. The script simplifies building
 polygons and handles multipolygons.
 
 - See all details in the script's [README](https://github.com/osmlab/dcbuildings).
-- Building and address OSM file ready for manual review and upload for census
-  tract 000100: http://cl.ly/3L2t1X0Q3D08 
+- Sample: Building and address OSM file ready for manual review and upload for
+  census tract 000100: http://cl.ly/463r3N0B1q0a
+- Sample: Full export of all cleaned and concatenated addresses:
+  http://cl.ly/3U1z101F1e1k
 
 ## Known issues
 
