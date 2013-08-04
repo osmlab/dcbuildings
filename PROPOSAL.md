@@ -32,7 +32,9 @@ Please review:
 - [Terms of Use](http://data.octo.dc.gov/TermsOfUse.aspx)
 - [Explicit import permission](http://lists.openstreetmap.org/pipermail/talk-us/2008-October/000388.html)
 
-**[Slippy map of building data](http://a.tiles.mapbox.com/v3/lxbarth.map-luuf96x5/page.html)**
+[![](http://cl.ly/image/3b1j2P3E0r1r/Screen%20Shot%202013-08-04%20at%203.08.51%20PM.png)](http://a.tiles.mapbox.com/v3/lxbarth.map-luuf96x5/page.html)
+
+*[Highly accurate DC building data, click for slippy map]()*
 
 ## Process
 
