@@ -8,6 +8,7 @@ from shapely import speedups
 from sys import argv
 from glob import glob
 import re
+from pprint import pprint
 
 speedups.enable()
 
@@ -41,7 +42,8 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     for address in addresses:
         for i in buildingIdx.intersection(address.bounds):
             if buildings[i]['shape'].contains(address):
-                buildings[i]['properties']['addresses'].append(address.original)
+                buildings[i]['properties']['addresses'].append(
+                    address.original)
 
     # Map voids to buildings.
     for void in voids:
@@ -55,25 +57,30 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
         osmIds[type] = osmIds[type] - 1
         return osmIds[type]
 
-    # Appends an address to a given node or way.
-    def appendAddress(address, element):
-        if address['ADDRNUM'] and \
-            address['STNAME'] and \
-            address['STREET_TYP'] and \
-            address['QUADRANT']:
-            num = str(address['ADDRNUM'])
+    # Converts an address
+    def convertAddress(address):
+        pprint(address)
+        result = dict()
+        if all (k in address for k in ('ADDRNUM', 'STNAME', 'STREET_TYP', 'QUADRANT')):
+            result['addr:housenumber'] = str(address['ADDRNUM'])
             if address['ADDRNUMSUF']:
-                num = "%s %s" % (num, address['ADDRNUMSUF'])
-            element.append(etree.Element('tag', k='addr:housenumber', v=num))
+                result['addr:housenumber'] = "%s %s" % \
+                    (result['addr:housenumber'], address['ADDRNUMSUF'])
             if re.match('^(\d+)\w\w$', address['STNAME']): # Test for 2ND, 14TH, 21ST
                 streetname = address['STNAME'].lower()
             else:
                 streetname = address['STNAME'].title()
-            street = "%s %s %s" % \
+            result['addr:street'] = "%s %s %s" % \
                 (streetname,
                 address['STREET_TYP'].title(),
                 address['QUADRANT'])
-            element.append(etree.Element('tag', k = 'addr:street', v = street))
+        pprint(result)
+        return result
+
+    # Appends an address to a given node or way.
+    def appendAddress(address, element):
+        for k, v in convertAddress(address['properties']).iteritems():
+            element.append(etree.Element('tag', k=k, v=v))
 
     # Appends a building to a given OSM xml document.
     def appendBuilding(building, address, osmXml):
@@ -107,7 +114,7 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             osmXml.append(relation)
             way = relation
         way.append(etree.Element('tag', k='building', v='yes'))
-        if address: appendAddress(address['properties'], way)
+        if address: appendAddress(address, way)
 
     # Export buildings. Only export address with building if thre is exactly
     # one address per building.
@@ -131,7 +138,7 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             node = etree.Element('node', visible = 'true', id = str(newOsmId('node')))
             node.attrib['lon'] = str(address['geometry']['coordinates'][0])
             node.attrib['lat'] = str(address['geometry']['coordinates'][1])
-            appendAddress(address['properties'], node)
+            appendAddress(address, node)
             osmXml.append(node)
         with open(addressOut, 'w') as outFile:
             outFile.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
