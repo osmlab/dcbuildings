@@ -34,7 +34,7 @@ Please review:
 
 [![](http://cl.ly/image/3b1j2P3E0r1r/Screen%20Shot%202013-08-04%20at%203.08.51%20PM.png)](http://a.tiles.mapbox.com/v3/lxbarth.map-luuf96x5/page.html)
 
-*[Highly accurate DC building data, click for slippy map]()*
+*Highly accurate DC building data [(slippy map)](http://a.tiles.mapbox.com/v3/lxbarth.map-luuf96x5/page.html)*
 
 ## Process
 
