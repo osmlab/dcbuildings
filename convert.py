@@ -8,7 +8,6 @@ from shapely import speedups
 from sys import argv
 from glob import glob
 import re
-from pprint import pprint
 
 speedups.enable()
 
@@ -59,7 +58,6 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
 
     # Converts an address
     def convertAddress(address):
-        pprint(address)
         result = dict()
         if all (k in address for k in ('ADDRNUM', 'STNAME', 'STREET_TYP', 'QUADRANT')):
             result['addr:housenumber'] = str(address['ADDRNUM'])
@@ -74,7 +72,6 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
                 (streetname,
                 address['STREET_TYP'].title(),
                 address['QUADRANT'])
-        pprint(result)
         return result
 
     # Appends an address to a given node or way.
