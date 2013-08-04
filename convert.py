@@ -63,7 +63,7 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             result['addr:housenumber'] = str(address['ADDRNUM'])
             if address['ADDRNUMSUF']:
                 result['addr:housenumber'] = "%s %s" % \
-                    (result['addr:housenumber'], address['ADDRNUMSUF'])
+                    (result['addr:housenumber'], address['ADDRNUMSUF'].title())
             if re.match('^(\d+)\w\w$', address['STNAME']): # Test for 2ND, 14TH, 21ST
                 streetname = address['STNAME'].lower()
             else:
