@@ -72,6 +72,7 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
                 (streetname,
                 address['STREET_TYP'].title(),
                 address['QUADRANT'])
+            result['addr:postcode'] = str(int(address['ZIPCODE']))
         return result
 
     # Appends an address to a given node or way.
