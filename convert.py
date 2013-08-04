@@ -73,8 +73,6 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
                 address['STREET_TYP'].title(),
                 address['QUADRANT'])
             result['addr:postcode'] = str(int(address['ZIPCODE']))
-        with open('addresses.csv', 'a') as outFile:
-            outFile.writelines('"%s","%s","%s"\n' % (result['addr:housenumber'], result['addr:street'], result['addr:postcode']))
         return result
 
     # Appends an address to a given node or way.
