@@ -3,7 +3,7 @@
 *Proposal to finalize DC building and address import*
 
 - Supporter 1
-- Supporter 2
+- @andinocl
 - @mikelmaron
 - Alex Barth
 
