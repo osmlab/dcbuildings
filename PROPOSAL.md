@@ -15,7 +15,7 @@ aims to finalize the import in a manual, community based fashion.
 
 ![](http://www.sixpica.com/osm/wp-content/uploads/2013/05/Screen-Shot-2013-05-19-at-11.08.44-PM-1024x640.png)
 
-*Remaining, unimported buildings in Washington DC*
+*Remaining, unimported buildings in Washington DC (Map: [Chris Andino](http://www.sixpica.com/osm/2013/05/19/scope-of-work-cool-new-tools/))*
 
 ## Review
 
