@@ -8,21 +8,6 @@ to be used in JOSM for a manual review and upload to OpenStreetMap.
 
 [Import proposal](https://github.com/osmlab/dcbuildings/blob/master/PROPOSAL.md)
 
-## Source data
-
-- Address Points http://data.dc.gov/Metadata.aspx?id=190
-- Buildings http://data.dc.gov/Metadata.aspx?id=59
-
-## Features
-
-- Conflates buildings and addresses
-- Cleans address names
-- Exports one OSM XML building file per DC census tract
-- Exports OSM XML address files for addresses that pertain to buildings with
-  more than one address
-- Handles multipolygons
-- Simplifies building shapes
-
 ## Usage
 
 Run all stages:
@@ -50,6 +35,44 @@ You can run stages separately, like so:
     # For testing it's useful to convert just a single census tract.
     # For instance, convert census tract 000100:
     python convert.py 000100
+
+## Source data
+
+- Address Points http://data.dc.gov/Metadata.aspx?id=190
+- Buildings http://data.dc.gov/Metadata.aspx?id=59
+
+## Features
+
+- Conflates buildings and addresses
+- Cleans address names
+- Exports one OSM XML building file per DC census tract
+- Exports OSM XML address files for addresses that pertain to buildings with
+  more than one address
+- Handles multipolygons
+- Simplifies building shapes
+
+## Attribute mapping
+
+*Buildings*
+
+Each building is a closed way tagged with:
+
+    building="yes"
+    addr:housenumber="ADDRNUM ADDRNUMSUF" # If available
+    addr:streetname="STNAME STREET_TYP QUADRANT" # If available
+    addr:postcode="ZIPCODE" # If available
+
+(All entities in CAPS are from DCGIS address file.)
+
+*Addresses*
+
+Each address is a node tagged with:
+
+    addr:housenumber="ADDRNUM ADDRNUMSUF"
+    addr:streetname="STNAME STREET_TYP QUADRANT"
+    addr:postcode=ZIPCODE
+
+(All entities in CAPS from DCGIS address file.)
 
 ## Related
 
