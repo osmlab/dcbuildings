@@ -4,7 +4,7 @@
 
 - Supporter 1
 - Supporter 2
-- Supporter 3
+- @mikelmaron
 - Alex Barth
 
 ## Introduction
