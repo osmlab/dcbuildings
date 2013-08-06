@@ -2,10 +2,19 @@
 
 *Proposal to finalize DC building and address import*
 
-- Supporter 1
+Supporters:
+
 - @andinocl
 - @mikelmaron
 - Alex Barth
+
+Please review:
+
+- Data conflation
+- Upload process
+- OSM file quality
+
+**Before reporting issues [review issue queue for existing reports](https://github.com/osmlab/dcbuildings/issues?state=open).**
 
 ## Introduction
 
@@ -16,14 +25,6 @@ aims to finalize the import in a manual, community based fashion.
 ![](http://www.sixpica.com/osm/wp-content/uploads/2013/05/Screen-Shot-2013-05-19-at-11.08.44-PM-1024x640.png)
 
 *Remaining, unimported buildings in Washington DC (Map: [Chris Andino](http://www.sixpica.com/osm/2013/05/19/scope-of-work-cool-new-tools/))*
-
-## Review
-
-Please review:
-
-- Data conflation
-- Upload process
-- OSM file quality
 
 ## Data
 
