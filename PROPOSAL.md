@@ -40,14 +40,14 @@ aims to finalize the import in a manual, community based fashion.
 ## Process
 
 - Process DC shapefiles into census tract size OSM files
-- Review by local DC community and import-us working group
+- Review by local DC community, imports-us and imports working group
 - Upload data in a community based process, kicking off with a session at the
   OSM birthday sprint.
 
 ## Timeline
 
 - Proposal review July 29 - Aug 9 2013
-- Test imports Aug 10 2013 (OSM birthday sprint)
+- Incorporate feedback and test imports Aug 10 2013 (OSM birthday sprint)
 - Import period Mid Aug - End of October 2013 (Fall editathon)
 
 ## Conversion code
