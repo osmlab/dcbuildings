@@ -66,4 +66,5 @@ polygons and handles multipolygons.
 ## Known issues
 
 - [Duplicate nodes](https://github.com/osmlab/dcbuildings/issues/11)
-- [Import ids?](https://github.com/osmlab/dcbuildings/issues/10)
+- [Include dc:gis](https://github.com/osmlab/dcbuildings/issues/14)
+- [Expand abbreviations](https://github.com/osmlab/dcbuildings/issues/15)
