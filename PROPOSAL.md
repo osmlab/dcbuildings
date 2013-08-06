@@ -69,3 +69,4 @@ polygons and handles multipolygons.
 - [Duplicate nodes](https://github.com/osmlab/dcbuildings/issues/11)
 - [Include dc:gis](https://github.com/osmlab/dcbuildings/issues/14)
 - [Expand abbreviations](https://github.com/osmlab/dcbuildings/issues/15)
+- [Some odd multipolygons](https://github.com/osmlab/dcbuildings/issues/16)
