@@ -47,8 +47,13 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     # Map voids to buildings.
     for void in voids:
         for i in buildingIdx.intersection(void['shape'].bounds):
-            if buildings[i]['shape'].intersects(void['shape']):
-                buildings[i]['voids'].append(void)
+            print "INTERSECTION"
+            if void['shape'].contains(buildings[i]['shape']): print "contains"
+            if void['shape'].crosses(buildings[i]['shape']): print "crosses"
+            if void['shape'].equals(buildings[i]['shape']): print "equals"
+            if void['shape'].within(buildings[i]['shape']): print "within"
+            if void['shape'].touches(buildings[i]['shape']): print "touches"
+            # buildings[i]['voids'].append(void)
 
     # Generates a new osm id.
     osmIds = dict(node = -1, way = -1, rel = -1)
