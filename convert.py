@@ -75,18 +75,25 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
             result['addr:postcode'] = str(int(address['ZIPCODE']))
         return result
 
+    # Appends new node or returns existing if exists.
+    def appendNewNode(coords, osmXml):
+        for node in osmXml.iterfind('node'):
+            if int(float(node.get('lon'))*10**7) == int(coords[0]*10**7) and int(float(node.get('lat'))*10**7) == int(coords[1]*10**7):
+                return node
+        node = etree.Element('node', visible = 'true', id = str(newOsmId('node')))
+        node.set('lon', str(coords[0]))
+        node.set('lat', str(coords[1]))
+        osmXml.append(node)
+        return node
+
     def appendNewWay(coords, osmXml):
         way = etree.Element('way', visible='true', id=str(newOsmId('way')))
         firstNid = 0
         for i, coord in enumerate(coords):
             if i == 0: continue # the first and last coordinate are the same
-            nid = str(newOsmId('node'))
-            if i == 1: firstNid = nid
-            node = etree.Element('node', visible='true', id=nid)
-            node.attrib['lon'] = str(coord[0])
-            node.attrib['lat'] = str(coord[1])
-            osmXml.append(node)
-            way.append(etree.Element('nd', ref=nid))
+            node = appendNewNode(coord, osmXml)
+            if i == 1: firstNid = node.get('id')
+            way.append(etree.Element('nd', ref=node.get('id')))
         way.append(etree.Element('nd', ref=firstNid)) # close way
         osmXml.append(way)
         return way
@@ -133,11 +140,8 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
     if (len(addresses) > 0):
         osmXml = etree.Element('osm', version='0.6', generator='alex@mapbox.com')
         for address in addresses:
-            node = etree.Element('node', visible = 'true', id = str(newOsmId('node')))
-            node.attrib['lon'] = str(address['geometry']['coordinates'][0])
-            node.attrib['lat'] = str(address['geometry']['coordinates'][1])
+            node = appendNewNode(address['geometry']['coordinates'], osmXml)
             appendAddress(address, node)
-            osmXml.append(node)
         with open(addressOut, 'w') as outFile:
             outFile.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
             print "Exported " + addressOut
