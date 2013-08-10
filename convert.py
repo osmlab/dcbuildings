@@ -76,13 +76,16 @@ def convert(buildingIn, addressIn, buildingOut, addressOut):
         return result
 
     # Appends new node or returns existing if exists.
+    nodes = {}
     def appendNewNode(coords, osmXml):
-        for node in osmXml.iterfind('node'):
-            if int(float(node.get('lon'))*10**7) == int(coords[0]*10**7) and int(float(node.get('lat'))*10**7) == int(coords[1]*10**7):
-                return node
+        rlon = int(float(coords[0]*10**7))
+        rlat = int(float(coords[1]*10**7))
+        if (rlon, rlat) in nodes:
+            return nodes[(rlon, rlat)]
         node = etree.Element('node', visible = 'true', id = str(newOsmId('node')))
         node.set('lon', str(coords[0]))
         node.set('lat', str(coords[1]))
+        nodes[(rlon, rlat)] = node
         osmXml.append(node)
         return node
 
