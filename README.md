@@ -8,6 +8,31 @@ to be used in JOSM for a manual review and upload to OpenStreetMap.
 
 [Import proposal](https://github.com/osmlab/dcbuildings/blob/master/PROPOSAL.md)
 
+## Prerequisites 
+
+    libxml2 
+    libxslt
+    spatialindex
+    GDAL  
+   
+
+## Mac OSX specific install 
+  
+    # install brew http://brew.sh
+
+    brew install libxml2 
+    brew install libxslt 
+    brew install spatialindex 
+    brew install gdal 
+
+
+## Set up Python virtualenv and get dependencies
+
+    virtualenv ~/venvs/dcbuildings
+    source ~/venvs/dcbuildings/bin/activate 
+    pip install -r requirements.txt
+
+
 ## Usage
 
 Run all stages:
