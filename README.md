@@ -27,7 +27,7 @@ to be used in JOSM for a manual review and upload to OpenStreetMap.
 
 
 ## Set up Python virtualenv and get dependencies
-
+    # may need to easy_install pip and pip install virtualenv 
     virtualenv ~/venvs/dcbuildings
     source ~/venvs/dcbuildings/bin/activate 
     pip install -r requirements.txt
