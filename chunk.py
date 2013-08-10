@@ -26,7 +26,7 @@ def chunk(featureFileName, sectionFileName, pattern, key = None):
                 fileName = pattern % i
                 if key:
                     fileName = pattern % section['properties'][key]
-                with collection(fileName, 'w', 'Esri Shapefile',
+                with collection(fileName, 'w', 'ESRI Shapefile',
                         schema = featureFile.schema,
                         crs = featureFile.crs) as output:
                     sectionShape = asShape(section['geometry'])
