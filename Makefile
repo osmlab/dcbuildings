@@ -15,13 +15,19 @@ BlockGroupPly.zip:
 	curl -L "http://dcatlas.dcgis.dc.gov/catalog/download.asp?downloadID=1371&downloadTYPE=ESRI" -o BlockGroupPly.zip
 
 BldgPly: BldgPly.zip
+	rm -rf BldgPly
 	unzip BldgPly.zip -d BldgPly
+	rm BldgPly.zip
 
 AddressPt: AddressPt.zip
+	rm -rf AddressPt
 	unzip AddressPt.zip -d AddressPt
+	rm AddressPt.zip
 
 BlockGroupPly: BlockGroupPly.zip
+	rm -rf BlockGroupPly
 	unzip BlockGroupPly.zip -d BlockGroupPly
+	rm BlockGroupPly.zip
 
 BldgPly/buildings.shp: BldgPly
 	rm -f BldgPly/buildings.*
@@ -36,10 +42,12 @@ BlockGroupPly/blockgroups.shp: BlockGroupPly
 	ogr2ogr -t_srs EPSG:4326 BlockGroupPly/blockgroups.shp BlockGroupPly/BlockGroupPly.shp
 
 chunks: directories
+	rm -f chunks/*
 	python chunk.py AddressPt/addresses.shp BlockGroupPly/blockgroups.shp chunks/addresses-%s.shp OBJECTID
 	python chunk.py BldgPly/buildings.shp BlockGroupPly/blockgroups.shp chunks/buildings-%s.shp OBJECTID
 
 osm: directories
+	rm -f osm/*
 	python convert.py
 
 directories:
