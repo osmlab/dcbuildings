@@ -3,7 +3,7 @@
 import json
 import sys
 
-import_url_template = "http://newurl.example.com/buildings-addresses-%s.osm"
+import_url_template = "http://dcbuildings.s3.amazonaws.com/buildings-addresses-%s.osm"
 file_name = "BlockGroupPly/buildings.geojson"
 
 with open(sys.argv[1]) as f:
