@@ -41,6 +41,11 @@ BlockGroupPly/blockgroups.shp: BlockGroupPly
 	rm -f BlockGroupPly/blockgroups.*
 	ogr2ogr -t_srs EPSG:4326 BlockGroupPly/blockgroups.shp BlockGroupPly/BlockGroupPly.shp
 
+BlockGroupPly/blockgroups.geojson: BlockGroupPly
+	rm -f BlockGroupPly/blockgroups.geojson
+	ogr2ogr -simplify 3 -t_srs EPSG:900913 -f "GeoJSON" BlockGroupPly/blockgroups.geojson BlockGroupPly/BlockGroupPly.shp
+	python tasks.py BlockGroupPly/blockgroups.geojson > BlockGroupPly/blockgroups-tasking.geojson
+
 chunks: directories
 	rm -f chunks/*
 	python chunk.py AddressPt/addresses.shp BlockGroupPly/blockgroups.shp chunks/addresses-%s.shp OBJECTID
