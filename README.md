@@ -25,6 +25,11 @@ to be used in JOSM for a manual review and upload to OpenStreetMap.
     brew install spatialindex 
     brew install gdal 
 
+## Ubuntu install
+    sudo apt-get install libxml2
+    sudo apt-get install libxml2-dev libxslt1-dev python-dev
+    sudo apt-get install libspatialindex-dev
+    sudo apt-get install gdal-bin
 
 ## Set up Python virtualenv and get dependencies
     # may need to easy_install pip and pip install virtualenv 
