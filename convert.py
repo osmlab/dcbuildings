@@ -10,6 +10,7 @@ from glob import glob
 import re
 from pprint import pprint
 from decimal import Decimal, getcontext
+from multiprocessing import Pool
 
 getcontext().prec = 16
 
@@ -173,18 +174,26 @@ def convert(buildingIn, addressIn, osmOut):
         outFile.writelines(tostring(osmXml, pretty_print=True, xml_declaration=True, encoding='UTF-8'))
         print "Exported " + osmOut
 
+def convertTown(buildingFile):
+    matches = re.match('^.*-(\d+)\.shp$', buildingFile).groups(0)
+    convert(
+        buildingFile,
+        'chunks/addresses-%s.shp' % matches[0],
+        'osm/buildings-addresses-%s.osm' % matches[0])
+
+
+if __name__ == '__main__':
 # Run conversions. Expects an chunks/addresses-[tract id].shp for each
 # chunks/buildings-[tract id].shp. Optinally convert only one census tract.
-if (len(argv) == 2):
-    convert(
-        'chunks/buildings-%s.shp' % argv[1],
-        'chunks/addresses-%s.shp' % argv[1],
-        'osm/buildings-addresses-%s.osm' % argv[1])
-else:
-    buildingFiles = glob("chunks/buildings-*.shp")
-    for buildingFile in buildingFiles:
-        matches = re.match('^.*-(\d+)\.shp$', buildingFile).groups(0)
+    if (len(argv) == 2):
         convert(
-            buildingFile,
-            'chunks/addresses-%s.shp' % matches[0],
-            'osm/buildings-addresses-%s.osm' % matches[0])
+            'chunks/buildings-%s.shp' % argv[1],
+            'chunks/addresses-%s.shp' % argv[1],
+            'osm/buildings-addresses-%s.osm' % argv[1])
+    else:
+        buildingFiles = glob("chunks/buildings-*.shp")
+
+        pool = Pool()
+        pool.map(convertTown, buildingFiles)
+        pool.close()
+        pool.join()
