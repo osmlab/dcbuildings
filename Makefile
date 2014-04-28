@@ -17,17 +17,14 @@ BlockGroupPly.zip:
 BldgPly: BldgPly.zip
 	rm -rf BldgPly
 	unzip BldgPly.zip -d BldgPly
-	rm BldgPly.zip
 
 AddressPt: AddressPt.zip
 	rm -rf AddressPt
 	unzip AddressPt.zip -d AddressPt
-	rm AddressPt.zip
 
 BlockGroupPly: BlockGroupPly.zip
 	rm -rf BlockGroupPly
 	unzip BlockGroupPly.zip -d BlockGroupPly
-	rm BlockGroupPly.zip
 
 BldgPly/buildings.shp: BldgPly
 	rm -f BldgPly/buildings.*
