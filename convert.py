@@ -150,6 +150,8 @@ def convert(buildingIn, addressIn, osmOut):
         way.append(etree.Element('tag', k='building', v='yes'))
         if 'GIS_ID' in building['properties']:
             way.append(etree.Element('tag', k='dcgis:gis_id', v=str(building['properties']['GIS_ID'])))
+        if 'FLOORS' in building['properties']:
+            way.append(etree.Element('tag', k='building:levels', v=str(building['properties']['FLOORS'])))
         if address: appendAddress(address, way)
 
     # Export buildings & addresses. Only export address with building if thre is exactly
