@@ -1,12 +1,9 @@
 DC building and address import
 ==============================
 
-**[Work in progress, do not use for import yet](https://github.com/osmlab/dcbuildings/issues)**
-
 Generates an OSM file of buildings with addresses per DC census tract, ready
 to be used in JOSM for a manual review and upload to OpenStreetMap.
 
-[Import proposal](https://github.com/osmlab/dcbuildings/blob/master/PROPOSAL.md)
 
 ## Prerequisites 
 
